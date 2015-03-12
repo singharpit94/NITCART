@@ -1,0 +1,6 @@
+Display Size ,4.5 inches
+CPU ,1.4 GHz Quad Core Processor
+GPU, Adreno 325
+Primary Camera, 13.1 MP
+Secondary Camera,VGA
+RAM, 1GB 

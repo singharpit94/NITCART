@@ -1,0 +1,623 @@
+/* my slider was designed for an image background (optional) */
+html, body { height: 100%; padding: 0; margin: 0; }
+body { background: #fff; }
+
+/* project unique slide graphics settings, completely whatever you want them to be (optional) */
+.slide-gfx img {
+  max-width: 100%;
+  max-height: auto;
+  border-radius: 20px;
+  box-shadow: 0 0 80px rgba(255,255,255,1);
+}
+
+/* mask the overflowing content, this will prevent scrollbars (optional) */
+.css-slider-mask {
+  display: block;
+  overflow: hidden;
+  width: 80%;
+  height: 100%;
+  margin: 10%;
+  margin-top: -13%;
+}
+
+/* base style for the slider, you can place or size as you like (optional) */
+.css-slider {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: none;
+  width: 96%;
+  height: 100%;
+  margin-left: 2%;
+  z-index: 1;
+}
+
+/* inital trick to hide the slider from everyone */
+.css-slider {
+  position: relative;
+  display: none;
+}
+
+/* ... then a simple hack to only show for browsers that support :nth-child */
+body:nth-child(2) .css-slider {
+  display: block;
+}
+
+/* style the slides */
+.css-slider .slide {
+  display: block;
+  position: absolute;
+  left: 40px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  padding-left: 0;
+  padding-right: 40px;
+  z-index: 100;
+  outline: 0; /* kill the focus rect! */
+}
+
+/* style the forward arrow */
+.css-slider .slide {
+  background: url('img/arrow-right.svg') no-repeat right center;
+  background-size: 25px auto;
+}
+
+/* style the forward arrow hover state */
+.css-slider .slide:hover {
+  background-image: url('img/arrow-right-hover.svg');
+  cursor: pointer;
+}
+
+/* reveal the focused slide, including last child for when there is no focus */
+.css-slider .slide:target,
+.css-slider .slide:target:hover,
+.css-slider .slide:focus,
+.css-slider .slide:focus:hover,
+.css-slider .slide:last-child,
+.css-slider .slide:last-child:hover {
+  left: 40px;
+  right: 40px;
+  padding-left: 0;
+  padding-right: 0;
+  background: transparent;
+  z-index: 101;
+  cursor: default;
+}
+
+/* affect slides that have been navigated past the current */
+.css-slider .slide:target ~ .slide,
+.css-slider .slide:focus ~ .slide {
+  padding-left: 40px;
+  padding-right: 0;
+  left: 0;
+  right: 40px;
+}
+
+/* style the previous arrow */
+.css-slider .slide:target ~ .slide,
+.css-slider .slide:focus ~ .slide {
+  background: url('img/arrow-left.svg') no-repeat left center;
+  background-size: 25px auto;
+}
+
+/* style the previous arrow hover state */
+.css-slider .slide:target ~ .slide:hover,
+.css-slider .slide:focus ~ .slide:hover {
+  background-image: url('img/arrow-left-hover.svg');
+}
+
+/* by default hide all slide contents, if animation is removed 
+   this is required to snap slides on or off */
+.css-slider .slide .slide-outer {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+/* slide-inner is purely used for centering of the slide,
+   using the table vertical center method. */
+.css-slider .slide .slide-outer .slide-inner {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* a wrapper that holds whatever you wish to put in your slide, 
+   needs inline-block to center properly */
+.css-slider .slide .slide-outer .slide-inner .slide-gfx {
+  position: relative;
+  display: inline-block;
+}
+
+/* for the focused or last child, show the slide contents */
+.css-slider .slide:target .slide-outer,
+.css-slider .slide:focus .slide-outer,
+.css-slider .slide:last-child .slide-outer {
+  display: block; /* if they don't support display table */
+  display: table;
+}
+
+/* override the last-child slide if a slide has been focused */
+.css-slider .slide:target ~ .slide:last-child,
+.css-slider .slide:focus ~ .slide:last-child {
+  cursor: pointer;
+}
+
+/* override the last-child slide contents if a slide has been focused */
+.css-slider .slide:target ~ .slide:last-child .slide-outer,
+.css-slider .slide:focus ~ .slide:last-child .slide-outer {
+  display: none;
+}
+
+/* make sure the slide graphics appear above everything else */
+.css-slider .slide .slide-outer .slide-gfx {
+  z-index: 102;
+  text-align: left; /* override the centering back to defaults */
+}
+
+/* annoyingly the only "required" arbitrary part of the css -- 
+   the following means the back arrow is supported for 
+   up to 20 slides. If you need more, just extend. 
+   This could be fixed if there was a selector like "~"
+   or "+" which would work backwards through siblings.
+   */
+.css-slider .slide:target ~ .slide:nth-child(1),
+.css-slider .slide:focus  ~ .slide:nth-child(1) { z-index:99; }
+.css-slider .slide:target ~ .slide:nth-child(2),
+.css-slider .slide:focus  ~ .slide:nth-child(2) { z-index:98; }
+.css-slider .slide:target ~ .slide:nth-child(3),
+.css-slider .slide:focus  ~ .slide:nth-child(3) { z-index:97; }
+.css-slider .slide:target ~ .slide:nth-child(4),
+.css-slider .slide:focus  ~ .slide:nth-child(4) { z-index:96; }
+.css-slider .slide:target ~ .slide:nth-child(5),
+.css-slider .slide:focus  ~ .slide:nth-child(5) { z-index:95; }
+.css-slider .slide:target ~ .slide:nth-child(6),
+.css-slider .slide:focus  ~ .slide:nth-child(6) { z-index:94; }
+.css-slider .slide:target ~ .slide:nth-child(7),
+.css-slider .slide:focus  ~ .slide:nth-child(7) { z-index:93; }
+.css-slider .slide:target ~ .slide:nth-child(8),
+.css-slider .slide:focus  ~ .slide:nth-child(8) { z-index:92; }
+.css-slider .slide:target ~ .slide:nth-child(9),
+.css-slider .slide:focus  ~ .slide:nth-child(9) { z-index:91; }
+.css-slider .slide:target ~ .slide:nth-child(10),
+.css-slider .slide:focus  ~ .slide:nth-child(10) { z-index:90; }
+.css-slider .slide:target ~ .slide:nth-child(11),
+.css-slider .slide:focus  ~ .slide:nth-child(11) { z-index:89; }
+.css-slider .slide:target ~ .slide:nth-child(12),
+.css-slider .slide:focus  ~ .slide:nth-child(12) { z-index:88; }
+.css-slider .slide:target ~ .slide:nth-child(13),
+.css-slider .slide:focus  ~ .slide:nth-child(13) { z-index:87; }
+.css-slider .slide:target ~ .slide:nth-child(14),
+.css-slider .slide:focus  ~ .slide:nth-child(14) { z-index:86; }
+.css-slider .slide:target ~ .slide:nth-child(15),
+.css-slider .slide:focus  ~ .slide:nth-child(15) { z-index:85; }
+.css-slider .slide:target ~ .slide:nth-child(16),
+.css-slider .slide:focus  ~ .slide:nth-child(16) { z-index:84; }
+.css-slider .slide:target ~ .slide:nth-child(17),
+.css-slider .slide:focus  ~ .slide:nth-child(17) { z-index:83; }
+.css-slider .slide:target ~ .slide:nth-child(18),
+.css-slider .slide:focus  ~ .slide:nth-child(18) { z-index:82; }
+.css-slider .slide:target ~ .slide:nth-child(19),
+.css-slider .slide:focus  ~ .slide:nth-child(19) { z-index:81; }
+.css-slider .slide:target ~ .slide:nth-child(20),
+.css-slider .slide:focus  ~ .slide:nth-child(20) { z-index:80; }
+
+/** --------------------------------------------------------------------------
+ * HANDLE THE SLIDE ANIMATION (optional)
+ * ------------------------------------------------------------------------ */
+
+/* Override the default instant slide behaviour */
+.css-slider .slide .slide-outer {
+  display: block !important;
+  display: table !important;
+}
+
+/* set up the transitions */
+.css-slider .slide .slide-outer {
+  -webkit-transition-property:        opacity, -wekbit-transform;
+  -moz-transition-property:           opacity, -moz-transform;
+  -ms-transition-property:            opacity, -ms-transform;
+  -o-transition-property:             opacity, -o-transform;
+  transition-property:                opacity, transform;
+  -webkit-transition-duration:        1s;
+  -moz-transition-duration:           1s;
+  -ms-transition-duration:            1s;
+  -o-transition-duration:             1s;
+  transition-duration:                1s;
+  -webkit-transition-timing-function: ease;
+  -moz-transition-timing-function:    ease;
+  -ms-transition-timing-function:     ease;
+  -o-transition-timing-function:      ease;
+  transition-timing-function:         ease;
+}
+
+/* After state */
+.css-slider .slide:target ~ .slide .slide-outer,
+.css-slider .slide:target ~ .slide:last-child .slide-outer,
+.css-slider .slide:focus ~ .slide .slide-outer,
+.css-slider .slide:focus ~ .slide:last-child .slide-outer {
+  -webkit-transform: translate(-150%,0); -webkit-transform: translate3D(-150%,0,0);
+  -moz-transform:    translate(-150%,0); -moz-transform:    translate3D(-150%,0,0);
+  -ms-transform:     translate(-150%,0); -ms-transform:     translate3D(-150%,0,0);
+  -o-transform:      translate(-150%,0); -o-transform:      translate3D(-150%,0,0);
+  transform:         translate(-150%,0); transform:         translate3D(-150%,0,0);
+}
+
+/* Before state */
+.css-slider .slide .slide-outer {
+  -webkit-transform: translate(200%,0); -webkit-transform: translate3D(200%,0,0);
+  -moz-transform:    translate(200%,0); -moz-transform:    translate3D(200%,0,0);
+  -ms-transform:     translate(200%,0); -ms-transform:     translate3D(200%,0,0);
+  -o-transform:      translate(200%,0); -o-transform:      translate3D(200%,0,0);
+  transform:         translate(200%,0); transform:         translate3D(200%,0,0);
+}
+
+/* Focused state*/
+.css-slider .slide:target .slide-outer,
+.css-slider .slide:focus .slide-outer,
+.css-slider .slide:last-child .slide-outer {
+  -webkit-transform: translate(0,0); -webkit-transform: translate3D(0,0,0);
+  -moz-transform:    translate(0,0); -moz-transform:    translate3D(0,0,0);
+  -ms-transform:     translate(0,0); -ms-transform:     translate3D(0,0,0);
+  -o-transform:      translate(0,0); -o-transform:      translate3D(0,0,0);
+  transform:         translate(0,0); transform:         translate3D(0,0,0);
+}
+
+/** --------------------------------------------------------------------------
+ * SMALL SCREEN FIX / SLIDE JERK (optional)
+ * ---------------------------------------------------------------------------
+ * When we shift 'left' and 'right' values -- in order to allow access to a future
+ * or past arrow -- this can cause a jump in the responsive scaling of the slide.
+ * if we transition the left value quickly, it can make this appear less jarring.
+ */
+
+.css-slider .slide {
+  -webkit-transition-property:        left, padding-left;
+  -moz-transition-property:           left, padding-left;
+  -ms-transition-property:            left, padding-left;
+  -o-transition-property:             left, padding-left;
+  transition-property:                left, padding-left;
+  -webkit-transition-duration:        1s;
+  -moz-transition-duration:           1s;
+  -ms-transition-duration:            1s;
+  -o-transition-duration:             1s;
+  transition-duration:                1s;
+  -webkit-transition-timing-function: ease;
+  -moz-transition-timing-function:    ease;
+  -ms-transition-timing-function:     ease;
+  -o-transition-timing-function:      ease;
+  transition-timing-function:         ease;
+}
+
+/** --------------------------------------------------------------------------
+ * Add-on module : responsive images
+ * ------------------------------------------------------------------------ */
+.with-responsive-images .slide-gfx img {
+  width: 100%;
+  height: auto;
+}
+
+/** --------------------------------------------------------------------------
+ * Add-on module : stop user selection
+ * ------------------------------------------------------------------------ */
+
+/* if your slides don't need to be selectable, I recommend using this */
+.with-selection-disabled {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/** --------------------------------------------------------------------------
+ * Add-on module : initial fade in 
+ * ------------------------------------------------------------------------ */
+.with-fade-in .slide-gfx {
+  opacity: 0;
+}
+
+/* animate into visibility */
+.with-fade-in .slide-gfx {
+  -webkit-animation:           css-slideshow-fade-in 2s;
+  -moz-animation:              css-slideshow-fade-in 2s;
+  -ms-animation:               css-slideshow-fade-in 2s;
+  -o-animation:                css-slideshow-fade-in 2s;
+  animation:                   css-slideshow-fade-in 2s;
+  -wekbit-animation-delay:     1s;
+  -moz-animation-delay:        1s;
+  -ms-animation-delay:         1s;
+  -o-animation-delay:          1s;
+  animation-delay:             1s;
+  -webkit-animation-fill-mode: forwards;
+  -moz-animation-fill-mode:    forwards;
+  -ms-animation-fill-mode:     forwards;
+  -o-animation-fill-mode:      forwards;
+  animation-fill-mode:         forwards;
+}
+
+/* Vebdor animations */
+@-webkit-keyframes css-slideshow-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@-moz-keyframes css-slideshow-fade-in    { from { opacity: 0; } to { opacity: 1; } }
+@-ms-keyframes css-slideshow-fade-in     { from { opacity: 0; } to { opacity: 1; } }
+@-o-keyframes css-slideshow-fade-in      { from { opacity: 0; } to { opacity: 1; } }
+@keyframes css-slideshow-fade-in         { from { opacity: 0; } to { opacity: 1; } }
+
+/** --------------------------------------------------------------------------
+ * Add-on module : slide reflection
+ * ------------------------------------------------------------------------ */
+
+/* force our slide-gfx to be inline-block and relative positioned */
+.with-reflection .slide-gfx {
+  display: inline-block !important;
+}
+
+/* reflection for webkit agents */
+.with-reflection .slide-gfx > *:first-child {
+  -webkit-box-reflect: below 2px 
+        -webkit-gradient(linear, left top, left bottom, 
+           from(transparent), color-stop(0.9, transparent), to(white));
+}
+
+/* make sure internal images don't keep inline spacing/margin */
+.with-reflection .slide-gfx img {
+  display: block;
+}
+
+/* generate the reflection */
+.with-reflection .slide-gfx:after {
+  content: '';
+  position: absolute;
+  display: block;
+  mask: url("#mask"); /* gradient fade the reflection */
+  transform: scaleY(-1); /* flip clone to appear as reflection */
+  opacity: 0.5; /* fade out reflection */
+  top: 100%;
+  width: 100%;
+  height: 60px;
+  z-index: 200;
+  margin-top: 2px;
+}
+
+/* again, due to element() requiring IDs we need arbitrarty code per each slide and each slide-gfx needs an id */
+.with-reflection #s1:after { background: -moz-element(#s1) no-repeat left bottom; }
+.with-reflection #s2:after { background: -moz-element(#s2) no-repeat left bottom; }
+.with-reflection #s3:after { background: -moz-element(#s3) no-repeat left bottom; }
+.with-reflection #s4:after { background: -moz-element(#s4) no-repeat left bottom; }
+.with-reflection #s5:after { background: -moz-element(#s5) no-repeat left bottom; }
+
+/** --------------------------------------------------------------------------
+ * Add-on module : slide zoom (optional, not compatible with slide float)
+ * ------------------------------------------------------------------------ */
+.with-slide-zoom .slide .slide-gfx > *:first-child {
+  -webkit-transition-property:        max-width;
+  -moz-transition-property:           max-width;
+  -ms-transition-property:            max-width;
+  -o-transition-property:             max-width;
+  transition-property:                max-width;
+  -webkit-transition-duration:        1s;
+  -moz-transition-duration:           1s;
+  -ms-transition-duration:            1s;
+  -o-transition-duration:             1s;
+  transition-duration:                1s;
+  -webkit-transition-timing-function: ease-in-out;
+  -moz-transition-timing-function:    ease-in-out;
+  -ms-transition-timing-function:     ease-in-out;
+  -o-transition-timing-function:      ease-in-out;
+  transition-timing-function:         ease-in-out;
+  -webkit-transition-delay:           0.25s;
+  -moz-transition-delay:              0.25s;
+  -ms-transition-delay:               0.25s;
+  -o-transition-delay:                0.25s;
+  transition-delay:                   0.25s;
+}
+
+.with-slide-zoom .slide .slide-gfx > *:first-child:hover {
+  max-width: 1000px;
+}
+
+/** --------------------------------------------------------------------------
+ * Add-on module : slide float (optional, not compatible with slide zoom)
+ * ------------------------------------------------------------------------ */
+
+/* inital transition set-up */
+.with-slide-float:not(.with-slide-zoom) .slide .slide-gfx > *:first-child,
+.with-slide-float-hover:not(.with-slide-zoom) .slide .slide-gfx > *:first-child {
+  -webkit-transition-property:        transform;
+  -moz-transition-property:           transform;
+  -ms-transition-property:            transform;
+  -o-transition-property:             transform;
+  transition-property:                transform;
+  -webkit-transition-duration:        1s;
+  -moz-transition-duration:           1s;
+  -ms-transition-duration:            1s;
+  -o-transition-duration:             1s;
+  transition-duration:                1s;
+  -webkit-transition-timing-function: ease-in-out;
+  -moz-transition-timing-function:    ease-in-out;
+  -ms-transition-timing-function:     ease-in-out;
+  -o-transition-timing-function:      ease-in-out;
+  transition-timing-function:         ease-in-out;
+}
+
+/* we need a delay for the non-hover version */
+.with-slide-float:not(.with-slide-zoom) .slide .slide-gfx > *:first-child {
+  -webkit-transition-delay:           1s;
+  -moz-transition-delay:              1s;
+  -ms-transition-delay:               1s;
+  -o-transition-delay:                1s;
+  transition-delay:                   1s;
+}
+
+/* initial levitation on focus */
+.with-slide-float:not(.with-slide-zoom) .slide:target .slide-gfx > *:first-child,
+.with-slide-float:not(.with-slide-zoom) .slide:focus .slide-gfx > *:first-child,
+.with-slide-float-hover:not(.with-slide-zoom) .slide .slide-gfx > *:first-child:hover {
+  -webkit-transform: translate(0,-40px); -webkit-transform: translate3D(0,-40px,0);
+  -moz-transform:    translate(0,-40px); -moz-transform:    translate3D(0,-40px,0);
+  -ms-transform:     translate(0,-40px); -ms-transform:     translate3D(0,-40px,0);
+  -o-transform:      translate(0,-40px); -o-transform:      translate3D(0,-40px,0);
+  transform:         translate(0,-40px); transform:         translate3D(0,-40px,0);
+}
+
+/* trigger the float animation after 4s */
+.with-slide-float:not(.with-slide-zoom) .slide:target .slide-gfx > *:first-child,
+.with-slide-float:not(.with-slide-zoom) .slide:focus .slide-gfx > *:first-child,
+.with-slide-float-hover:not(.with-slide-zoom) .slide .slide-gfx > *:first-child:hover {
+  -webkit-animation:                 css-slideshow-levitate 4s;
+  -moz-animation:                    css-slideshow-levitate 4s;
+  -ms-animation:                     css-slideshow-levitate 4s;
+  -o-animation:                      css-slideshow-levitate 4s;
+  animation:                         css-slideshow-levitate 4s;
+  -wekbit-animation-direction:       alternate;
+  -moz-animation-direction:          alternate;
+  -ms-animation-direction:           alternate;
+  -o-animation-direction:            alternate;
+  animation-direction:               alternate;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count:    infinite;
+  -ms-animation-iteration-count:     infinite;
+  -o-animation-iteration-count:      infinite;
+  animation-fill-iteration-count:    infinite;
+  -webkit-animation-timing-function: ease-in-out;
+  -moz-animation-timing-function:    ease-in-out;
+  -ms-animation-timing-function:     ease-in-out;
+  -o-animation-timing-function:      ease-in-out;
+  animation-timing-function:         ease-in-out;
+  -wekbit-animation-delay:           2s;
+  -moz-animation-delay:              2s;
+  -ms-animation-delay:               2s;
+  -o-animation-delay:                2s;
+  animation-delay:                   2s;
+}
+
+/* longer delay for automatic version i.e. non-hover */
+.with-slide-float:not(.with-slide-zoom) .slide:target .slide-gfx > *:first-child,
+.with-slide-float:not(.with-slide-zoom) .slide:focus .slide-gfx > *:first-child {
+  -wekbit-animation-delay:           4s;
+  -moz-animation-delay:              4s;
+  -ms-animation-delay:               4s;
+  -o-animation-delay:                4s;
+  animation-delay:                   4s;
+}
+
+/* Vebdor animations for the float */
+@-webkit-keyframes css-slideshow-levitate {
+  from { -webkit-transform: translate(0,-40px); -webkit-transform: translate3D(0,-40px,0); }
+  to   { -webkit-transform: translate(0,-20px); -webkit-transform: translate3D(0,-20px,0); }
+}
+@-moz-keyframes css-slideshow-levitate {
+  from { -moz-transform: translate(0,-40px); -moz-transform: translate3D(0,-40px,0); }
+  to   { -moz-transform: translate(0,-20px); -moz-transform: translate3D(0,-20px,0); }
+}
+@-ms-keyframes css-slideshow-levitate {
+  from { -ms-transform: translate(0,-40px); -ms-transform: translate3D(0,-40px,0); }
+  to   { -ms-transform: translate(0,-20px); -ms-transform: translate3D(0,-20px,0); }
+}
+@-o-keyframes css-slideshow-levitate {
+  from { -o-transform: translate(0,-40px); -o-transform: translate3D(0,-40px,0); }
+  to   { -o-transform: translate(0,-20px); -o-transform: translate3D(0,-20px,0); }
+}
+@keyframes css-slideshow-levitate {
+  from { transform: translate(0,-40px); transform: translate3D(0,-40px,0); }
+  to   { transform: translate(0,-20px); transform: translate3D(0,-20px,0); }
+}
+
+/** --------------------------------------------------------------------------
+ * Add-on module : ground shadow (optional)
+ * ------------------------------------------------------------------------ */
+
+.with-shadow .slide .slide-gfx:before {
+  /* display: none; ~ enable if you only want to show for IE9,10,11 */
+  content: '';
+  background: url('img/slide-shadow.svg') no-repeat center center;
+  position: absolute;
+  bottom: -10px;
+  left: -20px;
+  right: -20px;
+  height: 20px;
+  z-index: -1;
+  opacity: 0.7;
+}
+
+.ms9  .with-shadow .slide .slide-gfx:before,
+.ms10 .with-shadow .slide .slide-gfx:before,
+.ms11 .with-shadow .slide .slide-gfx:before {
+  display: block !important;
+}
+
+.with-shadow.with-slide-float .slide .slide-gfx:before,
+.with-shadow.with-slide-float-hover .slide .slide-gfx:before {
+  -webkit-transition-property:        opacity;
+  -moz-transition-property:           opacity;
+  -ms-transition-property:            opacity;
+  -o-transition-property:             opacity;
+  transition-property:                opacity;
+  -webkit-transition-duration:        2s;
+  -moz-transition-duration:           2s;
+  -ms-transition-duration:            2s;
+  -o-transition-duration:             2s;
+  transition-duration:                2s;
+  -webkit-transition-timing-function: ease-in-out;
+  -moz-transition-timing-function:    ease-in-out;
+  -ms-transition-timing-function:     ease-in-out;
+  -o-transition-timing-function:      ease-in-out;
+  transition-timing-function:         ease-in-out;
+}
+
+.with-shadow.with-slide-float .slide .slide-gfx:before {
+  -webkit-transition-delay:           2s;
+  -moz-transition-delay:              2s;
+  -ms-transition-delay:               2s;
+  -o-transition-delay:                2s;
+  transition-delay:                   2s;
+}
+
+.with-shadow.with-slide-float .slide:target .slide-gfx:before,
+.with-shadow.with-slide-float .slide:focus .slide-gfx:before,
+.with-shadow.with-slide-float .slide:last-child .slide-gfx:before,
+.with-shadow.with-slide-float-hover .slide .slide-gfx:hover:before {
+  opacity: 0.1;
+  -webkit-animation:                 css-slideshow-shadow 4s;
+  -moz-animation:                    css-slideshow-shadow 4s;
+  -ms-animation:                     css-slideshow-shadow 4s;
+  -o-animation:                      css-slideshow-shadow 4s;
+  animation:                         css-slideshow-shadow 4s;
+  -wekbit-animation-delay:           4s;
+  -moz-animation-delay:              4s;
+  -ms-animation-delay:               4s;
+  -o-animation-delay:                4s;
+  animation-delay:                   4s;
+  -wekbit-animation-direction:       alternate;
+  -moz-animation-direction:          alternate;
+  -ms-animation-direction:           alternate;
+  -o-animation-direction:            alternate;
+  animation-direction:               alternate;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count:    infinite;
+  -ms-animation-iteration-count:     infinite;
+  -o-animation-iteration-count:      infinite;
+  animation-fill-iteration-count:    infinite;
+  -webkit-animation-timing-function: ease-in-out;
+  -moz-animation-timing-function:    ease-in-out;
+  -ms-animation-timing-function:     ease-in-out;
+  -o-animation-timing-function:      ease-in-out;
+  animation-timing-function:         ease-in-out;
+}
+
+.with-shadow.with-slide-float-hover .slide .slide-gfx:hover:before {
+  -wekbit-animation-delay:           2s;
+  -moz-animation-delay:              2s;
+  -ms-animation-delay:               2s;
+  -o-animation-delay:                2s;
+  animation-delay:                   2s;
+}
+
+/* Vebdor animations for the float */
+@-webkit-keyframes css-slideshow-shadow { from { opacity: 0.1; } to { opacity: 0.7; } }
+@-moz-keyframes css-slideshow-shadow    { from { opacity: 0.1; } to { opacity: 0.7; } }
+@-ms-keyframes css-slideshow-shadow     { from { opacity: 0.1; } to { opacity: 0.7; } }
+@-o-keyframes css-slideshow-shadow      { from { opacity: 0.1; } to { opacity: 0.7; } }
+@keyframes css-slideshow-shadow         { from { opacity: 0.1; } to { opacity: 0.7; } }

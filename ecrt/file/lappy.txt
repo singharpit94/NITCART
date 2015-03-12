@@ -1,0 +1,6 @@
+Display Size ,15.6 inches
+CPU ,i7 4th Gen. @1.8GHz 3.4GHz
+Graphics Card, 2GB NVidia
+RAM, 4 GB
+Hard Disk Drive,500 GB
+Primary Camera, 1.3 MP
